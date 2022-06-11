@@ -19,7 +19,7 @@ import javax.persistence.Entity;
 public class Patient implements Serializable {  
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public long id;
+    public long    id;
     public String  name;
     public String  cpf;
     public String  rg;
@@ -28,5 +28,4 @@ public class Patient implements Serializable {
     public String  bairro;
     public String  cep;
     public String  tipo_sanguinio;
-    public Boolean alergia_medicacao;
 }

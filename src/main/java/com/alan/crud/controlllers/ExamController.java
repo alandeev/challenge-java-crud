@@ -3,7 +3,6 @@ package com.alan.crud.controlllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,22 +13,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.minidev.json.JSONObject;
 
-import com.alan.crud.entities.Patient;
+import com.alan.crud.entities.Exam;
 import com.alan.crud.repositories.*;
 
 @RestController
-@RequestMapping(path = "/patients")
-public class PatientController {
+@RequestMapping(path = "/exams")
+public class ExamController {
   @Autowired
-  PatientRepository patientRepository;
+  ExamRepository examRepository;
 
   @GetMapping
-  public List<Patient> list(@RequestParam(required=false) String field_name, @RequestParam(required=false) String field_value) {
-    Iterable<Patient> patients =  patientRepository.findAll();
-    List<Patient> listPatients = (List)patients;
+  public List<Exam> list(@RequestParam(required=false) String field_name, @RequestParam(required=false) String field_value) {
+    Iterable<Exam> exams =  examRepository.findAll();
+    List<Exam> listExams = (List)exams;
 
     if(field_value != null && field_value != null) {
-      listPatients.removeIf(item -> {
+      listExams.removeIf(item -> {
         try {
           var classObject = item.getClass();
           var value = classObject.getDeclaredField(field_name).get(item);
@@ -41,18 +40,18 @@ public class PatientController {
       });
     }
 
-    return listPatients;
+    return listExams;
   }
 
   @PostMapping
-  public Patient save(@RequestBody Patient patient) {
-    patientRepository.save(patient);
-    return patient;
+  public Exam save(@RequestBody Exam exam) {
+    examRepository.save(exam);
+    return exam;
   }
 
   @GetMapping(path="{id}")
   public Object get(@PathVariable Long id) {
-    var patient = patientRepository.findById(id);
+    var patient = examRepository.findById(id);
 
     JSONObject response = new JSONObject();
 
@@ -65,24 +64,6 @@ public class PatientController {
     response.put("status", "success");
     response.put("data", patient);
 
-    return response;
-  }
-
-  @DeleteMapping(path="{id}")
-  public Object delete(@PathVariable Long id) {
-    var patient = patientRepository.findById(id);
-
-    JSONObject response = new JSONObject();
-    if(patient.isEmpty()) {
-      response.put("status", "error");
-      response.put("message", "id not found");
-      return response;
-    }
-
-    patientRepository.deleteById(id);
-
-    response.put("status", "success");
-    response.put("message", "patient removed with success");
     return response;
   }
 }

@@ -24,8 +24,11 @@ public class Patient implements Serializable {
     public String  cpf;
     public String  rg;
     public String  data_nasc;
-    public String  endereco;
-    public String  bairro;
-    public String  cep;
     public String  tipo_sanguinio;
+    public String  cep;
+    public String  uf;
+    public String  localidade;
+    public String  bairro;
+    public String  rua;
+    public String  numero;
 }

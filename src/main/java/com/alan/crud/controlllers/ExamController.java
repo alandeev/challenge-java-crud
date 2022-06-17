@@ -3,6 +3,7 @@ package com.alan.crud.controlllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import net.minidev.json.JSONObject;
 
 import com.alan.crud.entities.Exam;
+import com.alan.crud.models.HttpResponse;
 import com.alan.crud.repositories.*;
 
 @RestController
@@ -23,7 +25,7 @@ public class ExamController {
   ExamRepository examRepository;
 
   @GetMapping
-  public List<Exam> list(@RequestParam(required=false) String field_name, @RequestParam(required=false) String field_value) {
+  public ResponseEntity list(@RequestParam(required=false) String field_name, @RequestParam(required=false) String field_value) {
     Iterable<Exam> exams =  examRepository.findAll();
     List<Exam> listExams = (List)exams;
 
@@ -40,30 +42,32 @@ public class ExamController {
       });
     }
 
-    return listExams;
+    HttpResponse response = new HttpResponse("Lista de exames", 200);
+    response.setData(listExams);
+    return response.extract(); 
   }
 
   @PostMapping
-  public Exam save(@RequestBody Exam exam) {
+  public ResponseEntity save(@RequestBody Exam exam) {
     examRepository.save(exam);
-    return exam;
+
+    HttpResponse response = new HttpResponse("Exame cadastrado com sucesso", 200);
+    response.setData(exam);
+    return response.extract(); 
   }
 
   @GetMapping(path="{id}")
-  public Object get(@PathVariable Long id) {
-    var patient = examRepository.findById(id);
+  public ResponseEntity get(@PathVariable Long id) {
+    var exam = examRepository.findById(id);
 
-    JSONObject response = new JSONObject();
-
-    if(patient.isEmpty()) {
-      response.put("status", "error");
-      response.put("message", "id not found");
-      return response;
+    if(exam.isEmpty()) {
+      HttpResponse response = new HttpResponse("Exame não encontrado", 404);
+      response.setData(exam);
+      return response.extract(); 
     }
 
-    response.put("status", "success");
-    response.put("data", patient);
-
-    return response;
+    HttpResponse response = new HttpResponse("Lista de exames", 200);
+    response.setData(exam);
+    return response.extract(); 
   }
 }
